@@ -28,7 +28,7 @@ WHERE DEPT_CODE = (SELECT DEPT_CODE
 -- 사번, 이름, 직급코드, 급여 조회
 
 -- 1) 전 직원의 평균급여 조회하기
-SELECT AVG(SALARY)
+SELECT ROUND(AVG(SALARY))
 FROM EMPLOYEE;           --> 대략 3047663원 인것을 알아냄
 
 -- 2) 급여가 3047663원 이상인 직원들의 정보조회
