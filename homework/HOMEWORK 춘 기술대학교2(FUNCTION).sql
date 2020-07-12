@@ -9,3 +9,5 @@ ORDER BY 입학년도;
 SELECT PROFESSOR_NAME, PROFESSOR_SSN
 FROM TB_PROFESSOR
 WHERE PROFESSOR_NAME NOT LIKE '___';
+
+-- 3 남자 교수들의 이름과 나이를 출력 나이가 적은 사람에서 많은 사람 순서로
