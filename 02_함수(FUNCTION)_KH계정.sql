@@ -534,7 +534,6 @@ FROM EMPLOYEE;
 -- SALARY값이 500만원 이하 350만원 초과일 경우 2등급 
 -- SALARY값이 350만원 이하 200만원 초과일 경우 3등급
 -- 그 외의 경우 4등급
-
 SELECT EMP_NAME, SALARY,
        CASE WHEN SALARY > 5000000 THEN '1등급'
             WHEN SALARY > 3500000 THEN '2등급'
