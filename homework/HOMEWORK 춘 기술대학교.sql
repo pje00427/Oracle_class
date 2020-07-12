@@ -10,18 +10,32 @@ FROM TB_DEPARTMENT;
 -- 2번
 -- 학과의 학과 정원을 다음고 ㅏ같은 형태로 화면에 출력한다.
 
+SELECT DEPARTMENT_NAME || '의 정원은 ' || CAPACITY || '명 입니다.' AS "학과별 정원"
+FROM TB_DEPARTMENT;
+
 
 -- 3번 국문학과에 다니는 여학생 중 휴학한 학생 
 SELECT DEPARTMENT_NO
 FROM TB_DEPARTMENT
 WHERE DEPARTMENT_NAME = '국어국문학과';
 
-
 SELECT STUDENT_NAME
 FROM TB_STUDENT
 WHERE SUBSTR(STUDENT_SSN, 8, 1) = '2' AND
-    ABSENCE_YN = 'Y' AND DEPARTMENT_NO = 001;
+      ABSENCE_YN = 'Y' AND DEPARTMENT_NO = 001;
 
+SELECT DEPARTMENT_NO, STUDENT_NAME
+FROM TB_DEPARTMENT
+JOIN TB_STUDENT USING(DEPARTMENT_NO)
+WHERE DEPARTMENT_NAME = '국어국문학과'
+  AND SUBSTR(STUDENT_SSN, 8, 1) = '2' 
+  AND ABSENCE_YN = 'Y' AND DEPARTMENT_NO = 001;
+
+-- 4번 
+-- 도서관에서 대출 도서 장기 연체자들을 찾아 이름을 게시하고자 한다.
+-- 그 대상자들의 학번이 다음과 같을 때 대상자들을 찾는 적절한 SQL구문을 작성하시오.
+-- A513079, A513090, A513091, A513110, A513119
+-- (워크북 결과와 반대로 이름 가나다순)
 
 
 
