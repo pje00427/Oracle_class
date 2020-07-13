@@ -201,10 +201,10 @@ CREATE TABLE MEM_UNIQUE2(
 );
 
 INSERT INTO MEM_UNIQUE2 VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1234-5678', 'aaa@naver.com');
-INSERT INTO MEM_UNIQUE2 VALUES(2, 'user02', 'pass02', '김말똥', NULL, NULL, NULL);
+INSERT INTO MEM_UNIQUE2 VALUES(2, 'user02', 'pass02', , NULL, NULL, NULL);
 INSERT INTO MEM_UNIQUE2
 VALUES(3, 'user02', 'pass03', '홍길녀', '여', '010-1111-2222', 'hgn@gmail.com');
-
+SELECT * FROM MEM_UNIQUE2;
 ---------------------------------------------------------------------------------
 
 -- * CHECK 제약조건
@@ -222,7 +222,7 @@ CREATE TABLE MEM_CHECK(
     MEM_ID VARCHAR2(20) NOT NULL,
     MEM_PWD VARCHAR2(20) NOT NULL,
     MEM_NAME VARCHAR2(20) NOT NULL,
-    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')), 
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')),
     PHONE VARCHAR2(15),
     EMAIL VARCHAR2(50),
     UNIQUE (MEM_ID)
@@ -237,6 +237,7 @@ VALUES(2, 'user02', 'pass02', '홍길녀', NULL, '010-1111-2222', 'aaa@naver.com');
 --> NULL값도 INSERT 가능함!!
 --> 만일 NULL값도 못들어오게 하고자 한다면 NOT NULL도 같이 부여해야됨!!
 
+SELECT * FROM MEM_CHECK;
 --------------------------------------------------------------------------------------
 
 -- ** 기본값(제약조건x) 설정 가능 ** 
