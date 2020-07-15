@@ -266,8 +266,183 @@ COMMIT;
 
 -------------------------------------------------------------------------------------
 
+-- * PRIMARY KEY (기본키) 제약조건
+--   테이블에서 각 행의 정보를 식별하기 위해 사용할 컬럼에 부여하는 제약조건
+--   --> 각 행들을 구분 할 수 있는 식별자의 역할 (EX.회원번호, 사번, 부서코드, 직급코드)
+--   --> PRIMARY KEY로 제약조건을 하게 되면 해당 그 컬럼에 NOT NULL + UNIQUE 제약조건
+--   주의할 점 : 한 테이블 당 한 개만 설정 가능
+
+CREATE TABLE MEM_PRIMARYKEY(
+    MEM_NO NUMBER CONSTRAINT MEM_PK PRIMARY KEY, -- 컬럼레벨 방식
+    MEM_ID VARCHAR2(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남','여')),
+    PHONE VARCHAR2(15),
+    EMAIL VARCHAR2(50) 
+   -- ,CONSTRAINT MEM_PK PRIMARY KEY(MEM_NO) 테이블레벨 방식
+);
+
+INSERT INTO MEM_PRIMARYKEY 
+VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1111-2222', 'hong@naver.com');
+
+INSERT INTO MEM_PRIMARYKEY
+VALUES(null, 'user02', 'pass02', '이순신', '남', null, null);
+--> 기본키 중복으로 인한 오류 , null 값이 들어있으면 null로 인한 오류 발생
+
+INSERT INTO MEM_PRIMARYKEY
+VALUES(2, 'user02', 'pass02', '이순신', '남', null, null);
+
+SELECT * FROM MEM_PRIMARYKEY;
+
+CREATE TABLE MEM_PRIMARYKEY2(
+
+    MEM_NO NUMBER, 
+    MEM_ID VARCHAR2(20),
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남','여')),
+    PHONE VARCHAR2(15),
+    EMAIL VARCHAR2(50),
+    PRIMARY KEY(MEM_NO,MEM_ID) --> 컬럼 묶어서 기본키 설정 --> 복합키
+);
+
+INSERT INTO MEM_PRIMARYKEY2 
+VALUES(1, 'user01', 'pass01', '홍길동', '남', '010-1111-2222', 'hong@naver.com');
+
+INSERT INTO MEM_PRIMARYKEY2
+VALUES(1, 'user02', 'pass02', '김말똥', NULL, null, null);
+
+INSERT INTO MEM_PRIMARYKEY2
+VALUES(2, 'user02', 'pass03', '유관순', NULL, null, null);
+--> 기본키로 설정된 컬럼들에는 NULL값이 들어가서는 안됨
+SELECT * FROM MEM_PRIMARYKEY2;
 
 
+-----------------------------------------------------
+
+-- 회원등급에 대한 데이터 보관하는 테이블
+CREATE TABLE MEM_GRADE(
+    GRADE_CODE NUMBER PRIMARY KEY,
+    GRADE_NAME VARCHAR2(30) NOT NULL
+);
+
+INSERT INTO MEM_GRADE VALUES(10, '일반회원');
+INSERT INTO MEM_GRADE VALUES(20, '우수회원');
+INSERT INTO MEM_GRADE VALUES(30, '특별회원');
+
+SELECT * FROM MEM_GRADE;
+
+-- * FOREIGN KEY (외래키) 제약조건
+--   다른 테이블에 존재하는 값만 들어와야 되는 컬럼에 부여하는 제약조건
+--   --> 다른 테이블을 참조한다고 표현 
+--   --> 즉, 참조된 다른 테이블이 제공하는 값만 사용할 수 있다. 
+--   --> FOREIGN KEY 제약조건에 의해 테이블 간의 관계가 형성됨!
+
+-- 컬럼레벨일 경우 
+-- 컬럼명 자료형(크기) [CONSTRAINT 제약조건명] REFERENCES 참조할테이블명[(컬럼명)]
+
+-- 테이블레벨일 경우 
+-- [CONSTRAINT 제약조건명] FOREIGN KEY(컬럼명) REFERENCES 참조할테이블명[(컬럼명)]
+
+CREATE TABLE MEM(
+    MEM_NO NUMBER PRIMARY KEY,
+    MEM_ID VARCHAR2(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN('남', '여')),
+    PHONE VARCHAR2(15),
+    EMAIL VARCHAR2(50),
+    GRADE_ID NUMBER REFERENCES MEM_GRADE--(GRADE_CODE) PRIMARY키 지정했기때문에생략가능 --> 컬럼레벨 방식
+--  FOREIGN KEY(GRADE_ID) REFERENCES MEM_GRADE--(GRADE_CODE) --> 테이블레벨 방식
+);
+
+INSERT INTO MEM
+VALUES(1, 'user01', 'pass01', '홍길동', NULL, NULL, NULL,10);
+INSERT INTO MEM
+VALUES(2, 'user02', 'pass02', '김말똥', NULL, NULL, NULL,20);
+INSERT INTO MEM
+VALUES(3, 'user03', 'pass03', '이순신', NULL, NULL, NULL,10);
+INSERT INTO MEM
+VALUES(4, 'user04', 'pass04', '안중근', null,null,null,null);
+--> null 들어갈 수 있음
+INSERT INTO MEM
+VALUES(5, 'user05', 'pass05', '신사임당', null,null,null,40);
+--> parent key 값을 찾을 수 없다는 오류 발생
+--  40이라는 값은 MEM_GRADE 테이블 GRADE_CODE 컬럼에서 제공하는 값이 아니므로 
+
+-- 부모테이블 (MEM_GRADE)   --관계--     자식테이블 (MEM)
+-- 반드시 부모테이블에 먼저 값이 있어야만 함!
+
+SELECT * FROM MEM;          --> GRADE_ID
+
+SELECT * FROM MEM_GRADE;    --> GRADE_CODE
+
+-- 회원번호, 회원아이디, 비밀번호, 이름, 등급명 
+-->> 오라클 전용
+SELECT MEM_NO, MEM_ID, MEM_PWD, MEM_NAME, GRADE_NAME
+FROM MEM, MEM_GRADE
+WHERE GRADE_ID = GRADE_CODE(+);
+
+-->> ANSI구문
+SELECT MEM_NO, MEM_ID, MEM_PWD, MEM_NAME, GRADE_NAME
+FROM MEM
+LEFT JOIN MEM_GRADE ON(GRADE_ID = GRADE_CODE);
+
+-- 부모테이블(MEM_GRADE)의 데이터 값을 삭제했을 경우 문제가 발생할 수 있음!
+SELECT * FROM MEM;
+SELECT * FROM MEM_GRADE;
+
+-- MEM_GRADE 테이블에 GRADE_CODE가 10인 데이터 지우기!
+DELETE FROM MEM_GRADE
+WHERE GRADE_CODE = 10;
+--> 자식테이블(MEM)중에 10을 사용하고 있기 때문에 삭제 할 수 없음!
+--------------------------------------------------------------
+
+-- 따라서 애초에 자식테이블을 생성할 때
+-- 부모테이블의 데이터가 삭제 됐을 때 어떻게 처리할 지를 옵션으로 정해놓을 수 있음!
+
+-- * FOREIGN KEY 삭제 옵션
+
+-- 삭제옵션을 별도로 제시하지 않으면 ON DELETE RESTRICTED (삭제 제한)으로 기본 지정이 되어있음
+
+SELECT * FROM MEM;
+
+-- 사용되고 있는 값이 없다면 삭제 가능하긴 함
+DELETE FROM MEM_GRADE
+WHERE GRADE_CODE = 30;
+
+SELECT * FROM MEM_GRADE;
+INSERT INTO MEM_GRADE VALUES(30, '특별회원');
+
+-- MEM 테이블 다시 만들기!! (삭제옵션 지정해서)
+DROP TABLE MEM;
+
+CREATE TABLE MEM(
+    MEM_NO NUMBER PRIMARY KEY,
+    MEM_ID VARCHAR2(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN('남', '여')),
+    PHONE VARCHAR2(15),
+    EMAIL VARCHAR2(50),
+    GRADE_ID NUMBER REFERENCES MEM_GRADE--(GRADE_CODE) PRIMARY키 지정했기때문에생략가능 --> 컬럼레벨 방식
+--  FOREIGN KEY(GRADE_ID) REFERENCES MEM_GRADE--(GRADE_CODE) --> 테이블레벨 방식
+);
+
+INSERT INTO MEM
+VALUES(1, 'user01', 'pass01', '홍길동', NULL, NULL, NULL,10);
+INSERT INTO MEM
+VALUES(2, 'user02', 'pass02', '김말똥', NULL, NULL, NULL,20);
+INSERT INTO MEM
+VALUES(3, 'user03', 'pass03', '이순신', NULL, NULL, NULL,10);
+INSERT INTO MEM
+VALUES(4, 'user04', 'pass04', '안중근', null,null,null,null);
 
 
+---- < 날라감 > ----
+
+DROP TABLE MEM;
+
+-- 2) ON DELETE CASCADE : 
 
