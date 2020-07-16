@@ -214,7 +214,7 @@ SET (SALARY,BONUS) = (SELECT SALARY, BONUS
                         FROM EMP_SALARY
                         WHERE EMP_NAME='유재식')
 WHERE EMP_NAME ='방명수';                        
-                        
+SELECT * FROM EMP_SALARY;                        
 -- 노옹철, 전형돈, 정중하, 하동운 사원들의 급여와 보너스를
 -- 유재식 사원의 급여와 보너스 값으로 변경하는 UPDATE
 
@@ -226,3 +226,79 @@ WHERE EMP_NAME IN ('노옹철','전형돈','정중하','하동운');
 
 -- 아시아 지역에 근무하는 직원들의 보너스를 0.3으로 변경
 
+-- 아시아 지역에 근무하는 직원들의 사번 조회
+SELECT EMP_ID
+FROM EMP_SALARY
+JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)
+JOIN LOCATION ON (LOCATION_ID = LOCAL_CODE)
+WHERE LOCAL_NAME LIKE 'ASIA%';
+
+-- 아시아 지역에서 근무하는 직원들의 보너스값을 0.3으로 변경
+UPDATE EMP_SALARY
+SET BONUS = 0.3
+WHERE EMP_ID IN   (SELECT EMP_ID
+                    FROM EMP_SALARY
+                    JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)
+                    JOIN LOCATION ON (LOCATION_ID = LOCAL_CODE)
+                    WHERE LOCAL_NAME LIKE 'ASIA%');
+SELECT * FROM EMP_SALARY;
+
+--------------------------------------------------
+
+-- UPDATE시 변경 할 값은 해당 컬럼에 대한 제약조건에 위배되면 안됨 
+
+-- 노옹철 사원의 부서코드를 D0으로 변경 
+DELETE EMPLOYEE
+SET DEPT_CODE = 'D0' --> FOREIGN KEY 제약조건 위배되어 오류
+WHERE EMP_NAME = '노옹철';
+
+-- 사번이 200번인 사원의 이름을 NULL로 변경
+UPDATE EMPLOYEE
+SET EMP_NAME = NULL         --> NOT NULL 제약조건 위배됨 
+WHERE EMP_ID = 200;
+
+----------------------------------------------------
+
+/*
+    4. DELETE
+      테이블에 기록된 데이터를 삭제하는 구문 (한 행이 다 삭제될꺼임)
+      
+      [표현식]
+      DELETE FROM 테이블명 
+      [WHERE 조건]; --> WHERE절 제시 안하면 전체 행 다 삭제 됨!
+      
+*/
+
+COMMIT;
+
+-- 장채현 사원의 데이터를 지우기 
+DELETE FROM EMPLOYEE
+WHERE EMP_NAME = '장채현';
+
+SELECT * FROM EMPLOYEE;
+
+ROLLBACK;
+
+DELETE FROM EMPLOYEE
+WHERE EMP_NAME = '강람보';
+
+COMMIT;
+
+-- DEPT_ID가 D3인 부서를 삭제!
+DELETE FROM DEPARTMENT
+WHERE DEPT_ID = 'D3';  --> 삭제 잘 됨 D3부서에 사원 없음 (D3의 값을 가져다 쓰는 자식데이터가 없기떄문에 삭제 잘됨)
+
+-- DEPT_ID가 D1인 부서를 삭제 
+DELETE FROM DEPARTMENT
+WHERE DEPT_ID ='D1';  --> D1의값을 가져다 쓰는 자식데이터가 있기때문에 삭제불가
+
+ROLLBACK;
+
+-- * TRUNCATE : 테이블의 전체 행을 삭제할 때 사용되는 구문 
+--              DELETE 보다 수행속도가 빠르다.
+--              별도의 조건 제시 불가, ROLLBACK이 불가함
+-- [표현식] TRUNCATE TABLE 테이블명;
+
+SELECT * FROM EMP_SALARY;
+
+TRUNCATE TABLE EMP_SALARY; -- 테이블이 사라지는게 아니라, 안에있는 데이터가 삭제 됨
