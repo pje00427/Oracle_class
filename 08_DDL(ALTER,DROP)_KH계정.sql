@@ -21,6 +21,7 @@
 
 -- 1) 컬럼 추가/수정/삭제
 -- 1-1) 컬럼 추가 (ADD) : ADD 컬럼명 데이터타입 [DEFAULT 기본값]
+
 SELECT * FROM DEPT_COPY;
 
 -- CNAME 컬럼 추가
@@ -55,15 +56,20 @@ MODIFY LNAME DEFAULT '미국';
 --      테이블에는 최소 한개의 컬럼은 존재해야한다. 
 --<필기확인>
 CREATE TABLE DEPT_COPY2
-AS SELECT 
+AS SELECT * FROM DEPT_COPY;
 
 -- DEPT_ID 컬럼지우기
 ALTER TABLE DEPT_COPY2 DROP COLUMN DEPT_ID;
 ROLLBACK ;--> DDL구문은 복구 불가능
+SELECT * FROM DEPT_COPY2;
 
 ALTER TABLE DEPT_COPY2 DROP COLUMN DEPT_TITLE;
+ALTER TABLE DEPT_COPY2 DROP COLUMN CNAME;
+ALTER TABLE DEPT_COPY2 DROP COLUMN LNAME;
 
--- <다시시작>
+ALTER TABLE DEPT_COPY2 DROP COLUMN LOCATION_ID; --> 최소 한개는 있어야됨
+
+
 ALTER TABLE DEPARTMENT DROP COLUMN DEPT_ID; --> 참조되고 있는 컬럼 있다면 삭제 불가능
 
 ------------------------------------------------------------------------------
