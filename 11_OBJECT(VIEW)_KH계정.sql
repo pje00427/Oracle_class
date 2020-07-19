@@ -71,7 +71,7 @@ FROM VW_EMPLOYEE            --> 가상테이블인것 뿐 (실제데이터가 담겨있는거 아님)
 WHERE DEPT_TITLE = '총무부';
 
 -- [참고]
-SELECT * FROM USER_TABLES; 
+SELECT * FROM USER_TABLES; -- 해당 계정이 가지고 있는 TABLE들에 대한 내용 조회
 SELECT * FROM USER_VIEWS; -- 해당 계정이 가지고 있는 VIEW들에 대한 내용 조회시 사용하는 시스템 테이블
 
 
@@ -98,7 +98,9 @@ AS SELECT EMP_ID, EMP_NAME, JOB_NAME,
           EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM HIRE_DATE) 근무년수
     FROM EMPLOYEE
     JOIN JOB USING(JOB_CODE);
-    
+
+ SELECT *
+ FROM VW_EMP_JOB;  
 CREATE OR REPLACE VIEW VW_EMP_JOB(사번, 사원명, 직급명, 성별, 근무년수) --> 모든컬럼에 대한 별칭 부여해야됨
 AS SELECT EMP_ID, EMP_NAME, JOB_NAME, 
           DECODE(SUBSTR(EMP_NO, 8, 1), '1', '남', '2', '여'), 
@@ -106,7 +108,7 @@ AS SELECT EMP_ID, EMP_NAME, JOB_NAME,
     FROM EMPLOYEE
     JOIN JOB USING(JOB_CODE);
 
-SELECT 사번, 사원명, 성별
+SELECT 사번, 사원명, 성별, 근무년수
 FROM VW_EMP_JOB;
 
 -- 뷰삭제하고자 한다면
@@ -115,7 +117,7 @@ DROP VIEW VW_EMP_JOB;
 --------------------------------------------------------------------------------
 
 -- 생성된 뷰를 이용해서 DML(INSERT, UPDATE, DELETE) 사용가능
--- 뷰를 통해 변경하게 되면 실제데이터가 담겨있는 베이스테이블에도 적용됨@!!!
+-- 뷰를 통해 변경하게 되면 실제데이터가 담겨있는 베이스테이블에도 적용됨!!!
 
 CREATE OR REPLACE VIEW VW_JOB
 AS SELECT JOB_CODE, JOB_NAME
