@@ -272,3 +272,115 @@ END;
 
 
 -----------------------------------------------------------------------------
+--<필기확인>
+-- 4) CASE 비교할대상자 WHEN 동등비교할값1 THEN 결과값1 WHEN 비교값2 THEN 결과값2 ELSE 결과값 END; (SWITCH문)
+
+-- 사번입력받은 후 해당 사원의 모든 컬럼 데이터 EMP에 대입
+
+DECLARE 
+    EMP EMPLOYEE%ROWTYPE;
+    DNAME VARCHAR2(30);
+BEGIN 
+    SELECT *
+    INTO EMP
+    FROM EMPLOYEE 
+    WHERE EMP_ID = &사번;
+    
+    DNAME := CASE EMP.DEPT_CODE
+                WHEN 'D1' THEN '인사관리부'
+                WHEN 'D2' THEN '회계관리부'
+                WHEN 'D3' THEN '마케팅부'
+                WHEN 'D4' THEN '국내영업부'
+                WHEN 'D5' THEN '해외영업1부'
+                WHEN 'D6' THEN '해외영업2부'
+                WHEN 'D7' THEN '해오영업3부'
+                WHEN 'D8' THEN '기술지원부'
+                WHEN 'D9' THEN '총무부'
+            END;    
+    DBMS_OUTPUT.PUT_LINE('사번 : ' || EMP.EMP_ID);
+    DBMS_OUTPUT.PUT_LINE('이름 : ' || EMP.EMP_NAME);
+    DBMS_OUTPUT.PUT_LINE('부서 : ' || DNAME);
+END;
+/
+        
+-- ** 반복문 **
+
+/*
+    1) BASIC LOOP 
+    
+    [표현식]
+    LOOP
+        반복적으로 실행시킬 구문
+        
+        반복문을 빠져나갈 조건 
+        
+    END LOOP;    
+    
+    --> 반복문을 빠져나갈 조건문 (두가지 표현)
+        IF 조건식 THEN EXIT 
+        
+*/
+
+-- 1~5까지 순차적으로 1씩 증가하는 값을 출력 
+DECLARE
+    N NUMBER := 1;
+BEGIN 
+    LOOP 
+        DBMS_OUTPUT.PUT_LINE(N);
+        N := N + 1;
+        
+        --IF N > 5 THEN EXIT; END IF;
+        EXIT WHEN N > 5;
+    END LOOP;    
+END;
+/
+
+------------------------------------------------------
+/*
+    2) FOR LOOP
+    
+    [표현식]
+    FOR 변수 IN [REVERSE] 초기값..최종값
+    LOOP
+        반복적으로 실행할 구문;
+    END LOOP;
+    
+*/
+
+BEGIN 
+    FOR N IN 1..5
+    LOOP 
+        DBMS_OUTPUT.PUT_LINE(N);
+    END LOOP;
+END;
+/
+-- 역으로 출력
+BEGIN 
+    FOR N IN REVERSE 1..5
+    LOOP 
+        DBMS_OUTPUT.PUT_LINE(N);
+    END LOOP;
+END;
+/
+
+-- 반복문을 이용한 데이터 삽입
+CREATE TABLE TEST2(
+    NUM NUMBER,
+    TODAY DATE
+);
+
+SELECT * FROM TEST2;
+
+BEGIN
+    FOR I IN 1..10
+    LOOP
+        INSERT INTO TEST2 VALUES(I, SYSDATE);
+    END LOOP;
+END;
+/
+
+-- 중첩 반복문
+-- 구구단 출력하기 
+-- <필기확인>
+
+
