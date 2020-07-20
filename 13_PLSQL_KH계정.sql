@@ -380,7 +380,31 @@ END;
 /
 
 -- 중첩 반복문
--- 구구단 출력하기 
--- <필기확인>
+-- 구구단(2~9단) 출력하기
+DECLARE
+    RESULT NUMBER;
+BEGIN
+
+    -- 바깥쪽 FOR문에 단수 (2~9)
+    -- 안쪽 FOR문에 곱해지는 수 (1~9)
+    
+    FOR DAN IN 2..9
+    LOOP
+        -- 짝수단만 출력하고자 할때
+        
+        IF MOD(DAN, 2) = 0
+        THEN
+            DBMS_OUTPUT.PUT_LINE('== ' || DAN || '단 ==');
+            FOR SU IN 1..9
+            LOOP
+                RESULT := DAN * SU;
+                DBMS_OUTPUT.PUT_LINE(DAN || ' X ' || SU || ' = ' || RESULT);
+            END LOOP;
+            DBMS_OUTPUT.PUT_LINE('');
+        END IF;
+        
+    END LOOP;
+END;
+/
 
 
