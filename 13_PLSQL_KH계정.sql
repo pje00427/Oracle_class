@@ -230,62 +230,46 @@ BEGIN
 END;    
 /
 
--- 사용자에게 입력받은 사번과 일치하는 사원의 급여 조회한 후 (SAL 변수에 대입)
+-- 사용자에게 입력받은 사번과 일치하는 사원의 급여 조회한 후 (SAL변수에 대입)
 -- 500만 이상이면 '고급'
 -- 300만 이상이면 '중급'
 -- 300만 미만이면 '초급'
 -- '해당 사원의 급여등급은 XX입니다.'
-
 DECLARE
     SAL EMPLOYEE.SALARY%TYPE;
     GRADE VARCHAR2(10);
 BEGIN
     SELECT SALARY
     INTO SAL
-    FROM EMPLOYEE 
+    FROM EMPLOYEE
     WHERE EMP_ID = &사번;
     
     IF SAL >= 5000000 THEN GRADE := '고급';
     ELSIF SAL >= 3000000 THEN GRADE := '중급';
     ELSE GRADE := '초급';
-    END IF ;
-
-    DBMS_OUTPUT.PUT_LINE('해당 사원의 급여등급은 ' || GRADE || '입니다.');
-END;
----<필기확인>
-DECLARE
-    SAL EMPLOYEE.SALARY%TYPE;
-    GRADE VARCHAR2(10);
-BEGIN
-    SELECT SALARY
-    INTO SAL
-    FROM EMPLOYEE 
-    WHERE EMP_ID = &사번;
+    END IF;
     
-   SELECT SAL_LEVEL 
-   INTO GRADE
-   FROM SAL_GRADE
-   WHERE SAL BETWEEN MIN_SAL AND MAX_SAL;
-   
     DBMS_OUTPUT.PUT_LINE('해당 사원의 급여등급은 ' || GRADE || '입니다.');
 END;
+/
+
 
 
 -----------------------------------------------------------------------------
---<필기확인>
+
 -- 4) CASE 비교할대상자 WHEN 동등비교할값1 THEN 결과값1 WHEN 비교값2 THEN 결과값2 ELSE 결과값 END; (SWITCH문)
 
 -- 사번입력받은 후 해당 사원의 모든 컬럼 데이터 EMP에 대입
 
-DECLARE 
+DECLARE
     EMP EMPLOYEE%ROWTYPE;
     DNAME VARCHAR2(30);
 BEGIN 
     SELECT *
     INTO EMP
-    FROM EMPLOYEE 
+    FROM EMPLOYEE
     WHERE EMP_ID = &사번;
-    
+
     DNAME := CASE EMP.DEPT_CODE
                 WHEN 'D1' THEN '인사관리부'
                 WHEN 'D2' THEN '회계관리부'
@@ -293,15 +277,18 @@ BEGIN
                 WHEN 'D4' THEN '국내영업부'
                 WHEN 'D5' THEN '해외영업1부'
                 WHEN 'D6' THEN '해외영업2부'
-                WHEN 'D7' THEN '해오영업3부'
+                WHEN 'D7' THEN '해외영업3부'
                 WHEN 'D8' THEN '기술지원부'
                 WHEN 'D9' THEN '총무부'
-            END;    
+             END;
+    
     DBMS_OUTPUT.PUT_LINE('사번 : ' || EMP.EMP_ID);
     DBMS_OUTPUT.PUT_LINE('이름 : ' || EMP.EMP_NAME);
     DBMS_OUTPUT.PUT_LINE('부서 : ' || DNAME);
 END;
 /
+
+
         
 -- ** 반복문 **
 
@@ -317,8 +304,9 @@ END;
     END LOOP;    
     
     --> 반복문을 빠져나갈 조건문 (두가지 표현)
-        IF 조건식 THEN EXIT 
-        
+        IF 조건식 THEN EXIT END IF;
+        EXIT WHEN 조건식;
+    
 */
 
 -- 1~5까지 순차적으로 1씩 증가하는 값을 출력 
