@@ -311,13 +311,13 @@ END;
 
 -- 1~5까지 순차적으로 1씩 증가하는 값을 출력 
 DECLARE
-    N NUMBER := 1;
+    N NUMBER := 1; 
 BEGIN 
     LOOP 
-        DBMS_OUTPUT.PUT_LINE(N);
-        N := N + 1;
+        DBMS_OUTPUT.PUT_LINE(N);  -- 출력하고
+        N := N + 1;  -- 1증가시키고
         
-        --IF N > 5 THEN EXIT; END IF;
+        --IF N > 5 THEN EXIT; END IF; -- 조건검사를 한번 더 해주는 
         EXIT WHEN N > 5;
     END LOOP;    
 END;
@@ -395,4 +395,91 @@ BEGIN
 END;
 /
 
+---------------------------------------------------------------------------------
 
+/*
+    3) WHILE LOOP
+    
+    [표현식]
+    WHILE 반복문이수행될조건 
+    LOOP
+        반복적으로 실행할구문
+    END LOOP;
+    
+*/
+-- 1-5까지 순차적으로 1씩 증가하는 값 출력 
+DECLARE
+    N NUMBER := 1;
+BEGIN 
+    WHILE N <= 5
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(N);
+        N := N +1;
+    END LOOP;
+END;
+/
+
+--WHILE 문으로 구구단(2~9 단) 출력 
+DECLARE
+    RESULT NUMBER;
+    DAN NUMBER := 2;
+    SU NUMBER;
+BEGIN 
+
+    WHILE DAN <= 9 
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('== ' || DAN || '단 ==');
+        SU := 1;
+        WHILE SU <= 9
+        LOOP
+            RESULT := DAN * SU;
+            DBMS_OUTPUT.PUT_LINE(DAN || 'X' || SU || ' = ' || RESULT);
+            SU := SU+1;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('');
+    DAN := DAN+1;
+END LOOP;
+END;
+/
+------------------------------------------
+/*
+    3. 예외처리부(EXCEPTION)
+    예외(EXCEPTION) : 실행중 발생하는 오류
+    
+    [표현식]
+    EXCEPTION
+        WHEN 예외명1 THEN 예외처리구문1;
+        WHEN 예외명2 THEN 예외처리구문1;
+        ...
+        WHEN OTHERS THEN 예외처리구문;
+        
+     * 시스템 예외 (오라클에서 미리정의 되어있는 예외)
+     - NO_DATA_FOUND : SELECT문 수행 결과가 한 행도 없을 경우 
+     - TOO_MANY_ROWS : 한 행만 리턴해야되는 SELECT문이 여러행을 반환 할 때
+     - ZERO_DIVIDE : 0으로 나눌 때
+     - DUP_VAL_ON_INDEX : UNIQUE 제약 조건을 가진 컬럼에 중복된 데이터가 INSERT될 때
+    
+*/
+-- 사용자가 입력한 수로 나눗셈 연산한 결과 출력 
+DECLARE
+    RESULT NUMBER;
+BEGIN
+    RESULT := 10 / &숫자;
+    DBMS_OUTPUT.PUT_LINE('결과: ' || RESULT);
+EXCEPTION
+    WHEN ZERO_DIVIDE THEN DBMS_OUTPUT.PUT_LINE('나누기 연산시 0으로 나눌 수 없어요!');
+    --WHEN OTHERS THEN DBMS_OUTPUT.PUT_LINE('나누기 연산시 0으로 나눌 수 없어요!');
+END;
+/
+
+-- UNIQUE  제약조건 위배시
+BEGIN
+    UPDATE EMPLOYEE
+    SET EMP_ID = '&변경할사번'
+    WHERE EMP_NAME ='노옹철';
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN DBMS_OUTPUT.PUT_LINE('이미 존재하는 사번입니다!');
+END;
+/
+
+SELECT * FROM EMPLOYEE;
