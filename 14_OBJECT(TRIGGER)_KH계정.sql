@@ -81,6 +81,7 @@ VALUES(SEQ_PCODE.NEXTVAL, '아이폰11PRO', '애플', 1000000, DEFAULT);
 INSERT INTO TB_PRODUCT
 VALUES(SEQ_PCODE.NEXTVAL, '대륙폰', '샤오미', 600000, DEFAULT);
 
+SELECT* FROM TB_PRODUCT;
 
 -- 2. 상품 입출고 상세 이력 테이블 (TB_PRODETAIL)
 --      (어떤 상품이 어떤날 몇개가 입고 또는 출고가 되었는지 기록하는 테이블)
